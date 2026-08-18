@@ -882,7 +882,9 @@ lemma integerTwo_seed_one :
   refine ⟨3, ![![0, 2, 3], ![1, 0, 2], ![2, 3, 3]], ?_, ?_, ?_⟩
   · decide
   · norm_num
-  · simp [InScalarOrder, matrixTail]
+  · intro h
+    have h₀ := h 0
+    norm_num [matrixTail] at h₀
 
 /-- Exact algebraic step `integerTwo_seed_two` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerTwo_seed_two :
@@ -890,7 +892,9 @@ lemma integerTwo_seed_two :
   refine ⟨41, ![![0, 15, 22], ![7, 0, 15], ![15, 22, 22]], ?_, ?_, ?_⟩
   · decide
   · norm_num
-  · simp [InScalarOrder, matrixTail]
+  · intro h
+    have h₀ := h 0
+    norm_num [matrixTail] at h₀
 
 /-- Exact algebraic step `integerThree_seed_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerThree_seed_one :
@@ -898,7 +902,9 @@ lemma integerThree_seed_one :
   refine ⟨4, ![![0, 2, 3], ![1, 0, 2], ![2, 3, 3]], ?_, ?_, ?_⟩
   · decide
   · norm_num
-  · simp [InScalarOrder, matrixTail]
+  · intro h
+    have h₀ := h 0
+    norm_num [matrixTail] at h₀
 
 /-- Exact algebraic step `integerThree_seed_two` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerThree_seed_two :
@@ -907,7 +913,9 @@ lemma integerThree_seed_two :
     ?_, ?_, ?_⟩
   · decide
   · norm_num
-  · simp [InScalarOrder, matrixTail]
+  · intro h
+    have h₀ := h 0
+    norm_num [matrixTail] at h₀
 
 /-- Exact algebraic step `integerFive_seed_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerFive_seed_one :
@@ -915,7 +923,9 @@ lemma integerFive_seed_one :
   refine ⟨1, ![![-5, -3, 2], ![8, -2, -5], ![-3, 2, 2]], ?_, ?_, ?_⟩
   · decide
   · norm_num
-  · simp [InScalarOrder, matrixTail]
+  · intro h
+    have h₀ := h 0
+    norm_num [matrixTail] at h₀
 
 /-- Exact algebraic step `integerFive_seed_two` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerFive_seed_two :
@@ -925,7 +935,9 @@ lemma integerFive_seed_two :
       ![451022, 389367, -161568]], ?_, ?_, ?_⟩
   · decide
   · norm_num
-  · simp [InScalarOrder, matrixTail]
+  · intro h
+    have h₀ := h 0
+    norm_num [matrixTail] at h₀
 
 /-- Exact algebraic step `integerCommon_mod_two_scalar_pow_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerCommon_mod_two_scalar_pow_iff (n : ℕ) :
