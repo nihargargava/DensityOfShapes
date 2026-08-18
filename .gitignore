@@ -1,0 +1,26 @@
+# Lake dependencies and build output
+/.lake/
+/lake-packages/
+/build/
+
+# Lean artifacts produced outside Lake's build directory
+*.olean
+*.ilean
+*.o
+*.a
+*.so
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+
+# Editor and IDE metadata
+/.idea/
+/.vscode/
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db

@@ -1,0 +1,30 @@
+name = "shapes_formal"
+version = "0.1.0"
+defaultTargets = ["ShapesFormal"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.0-rc1"
+
+[[lean_lib]]
+name = "ShapesFormal"
+srcDir = "FormalShapes"
+roots = [
+  "main",
+  "BananaLemma",
+  "CusickRegulator",
+  "SuborderUnits",
+  "ABCOrders",
+  "ABCFundamentalUnits",
+  "ABCLocalUnits",
+  "ABCMovingFrames",
+  "ABCScalarUnits",
+  "ABCUnitLogs",
+  "ArithmeticConstruction",
+  "CRTFamily",
+  "DynamicsCore",
+  "OrderPeriods",
+  "ABCCompactness",
+  "ABCBoundedFrames"
+]
