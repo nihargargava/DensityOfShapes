@@ -53,6 +53,7 @@ def bananaIntegralUnipotent (n : ℤ) :
     Matrix.SpecialLinearGroup (Fin 2) ℤ :=
   ⟨!![1, n; 0, 1], by simp [Matrix.det_fin_two_of]⟩
 
+/-- Auxiliary step `bananaUnipotent_int_mem` in the banana-density argument used in Proposition 5.2. -/
 theorem bananaUnipotent_int_mem (n : ℤ) :
     bananaUnipotent (n : ℝ) ∈ bananaIntegralSL2 := by
   refine ⟨bananaIntegralUnipotent n, ?_⟩
@@ -63,11 +64,13 @@ theorem bananaUnipotent_int_mem (n : ℤ) :
     simp [bananaUnipotent, bananaIntegralUnipotent,
       RingHom.mapMatrix_apply]
 
+/-- Auxiliary step `bananaDiagonal_zero` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaDiagonal_zero : bananaDiagonal 0 = 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [bananaDiagonal]
 
+/-- Auxiliary step `bananaDiagonal_add` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaDiagonal_add (t r : ℝ) :
     bananaDiagonal (t + r) = bananaDiagonal t * bananaDiagonal r := by
@@ -81,6 +84,7 @@ theorem bananaDiagonal_add (t r : ℝ) :
     congr 1
     ring
 
+/-- Auxiliary step `bananaDiagonal_neg` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaDiagonal_neg (t : ℝ) :
     bananaDiagonal (-t) = (bananaDiagonal t)⁻¹ := by
@@ -88,11 +92,13 @@ theorem bananaDiagonal_neg (t : ℝ) :
   rw [← bananaDiagonal_add]
   simp
 
+/-- Auxiliary step `bananaUnipotent_zero` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaUnipotent_zero : bananaUnipotent 0 = 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [bananaUnipotent]
 
+/-- Auxiliary step `bananaUnipotent_add` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaUnipotent_add (s r : ℝ) :
     bananaUnipotent (s + r) = bananaUnipotent s * bananaUnipotent r := by
@@ -103,6 +109,7 @@ theorem bananaUnipotent_add (s r : ℝ) :
     simp [bananaUnipotent, Matrix.mul_apply]
   ring
 
+/-- Auxiliary step `bananaUnipotent_neg` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaUnipotent_neg (s : ℝ) :
     bananaUnipotent (-s) = (bananaUnipotent s)⁻¹ := by
@@ -146,6 +153,7 @@ def bananaBasePoint : BananaModularSpace :=
 def bananaHorocyclePoint (s : ℝ) : BananaModularSpace :=
   ((bananaUnipotent s : BananaSL2R) : BananaModularSpace)
 
+/-- Auxiliary step `bananaHorocyclePoint_zero` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaHorocyclePoint_zero : bananaHorocyclePoint 0 = bananaBasePoint := by
   simp [bananaHorocyclePoint, bananaBasePoint]
@@ -159,6 +167,7 @@ theorem bananaHorocyclePoint_add_int (s : ℝ) (n : ℤ) :
   rw [bananaUnipotent_add]
   exact QuotientGroup.mk_mul_of_mem _ (bananaUnipotent_int_mem n)
 
+/-- Auxiliary step `bananaHorocyclePoint_add_one` in the banana-density argument used in Proposition 5.2. -/
 @[simp]
 theorem bananaHorocyclePoint_add_one (s : ℝ) :
     bananaHorocyclePoint (s + 1) = bananaHorocyclePoint s := by
@@ -168,6 +177,7 @@ theorem bananaHorocyclePoint_add_one (s : ℝ) :
 def bananaStripPoint (t s : ℝ) : BananaModularSpace :=
   bananaDiagonal t • bananaHorocyclePoint s
 
+/-- Auxiliary step `bananaStripPoint_eq_coset` in the banana-density argument used in Proposition 5.2. -/
 theorem bananaStripPoint_eq_coset (t s : ℝ) :
     bananaStripPoint t s =
       ((bananaDiagonal t * bananaUnipotent s : BananaSL2R) : BananaModularSpace) := by
@@ -179,6 +189,7 @@ def bananaExpandingStrip : Set BananaModularSpace :=
   {x | ∃ t ∈ Ici (0 : ℝ), ∃ s ∈ Icc (0 : ℝ) 1,
     x = bananaStripPoint t s}
 
+/-- Auxiliary step `mem_bananaExpandingStrip_iff` in the banana-density argument used in Proposition 5.2. -/
 theorem mem_bananaExpandingStrip_iff (x : BananaModularSpace) :
     x ∈ bananaExpandingStrip ↔
       ∃ t ∈ Ici (0 : ℝ), ∃ s ∈ Icc (0 : ℝ) 1,
@@ -189,6 +200,7 @@ theorem mem_bananaExpandingStrip_iff (x : BananaModularSpace) :
 def IsBananaDiagonalInvariant (C : Set BananaModularSpace) : Prop :=
   ∀ (t : ℝ), MapsTo (bananaDiagonal t • ·) C C
 
+/-- Auxiliary step `isBananaDiagonalInvariant_iff` in the banana-density argument used in Proposition 5.2. -/
 theorem isBananaDiagonalInvariant_iff (C : Set BananaModularSpace) :
     IsBananaDiagonalInvariant C ↔
       ∀ (t : ℝ) (x : BananaModularSpace), x ∈ C → bananaDiagonal t • x ∈ C := by
@@ -199,12 +211,14 @@ by the expanding-horocycle formulation of the banana lemma. -/
 def IsBananaForwardDiagonalInvariant (C : Set BananaModularSpace) : Prop :=
   ∀ (t : ℝ), 0 ≤ t → MapsTo (bananaDiagonal t • ·) C C
 
+/-- Auxiliary step `IsBananaDiagonalInvariant.forward` in the banana-density argument used in Proposition 5.2. -/
 theorem IsBananaDiagonalInvariant.forward
     {C : Set BananaModularSpace} (hC : IsBananaDiagonalInvariant C) :
     IsBananaForwardDiagonalInvariant C := by
   intro t _
   exact hC t
 
+/-- Auxiliary step `IsBananaDiagonalInvariant.image_eq` in the banana-density argument used in Proposition 5.2. -/
 theorem IsBananaDiagonalInvariant.image_eq
     {C : Set BananaModularSpace} (hC : IsBananaDiagonalInvariant C) (t : ℝ) :
     (bananaDiagonal t • ·) '' C = C := by
@@ -217,6 +231,7 @@ theorem IsBananaDiagonalInvariant.image_eq
     rw [← mul_smul, ← bananaDiagonal_add]
     simp
 
+/-- Auxiliary step `bananaExpandingStrip_subset` in the banana-density argument used in Proposition 5.2. -/
 theorem bananaExpandingStrip_subset
     {C : Set BananaModularSpace}
     (hdiag : IsBananaForwardDiagonalInvariant C)
@@ -244,13 +259,17 @@ def raw (r : ℝ) (n : ℕ) : ℤ := ⌊(pp n : ℝ) * r⌋
 def adj (r : ℝ) (n : ℕ) : ℤ :=
   if (pp n : ℤ) ∣ raw r n then raw r n + 1 else raw r n
 
+/-- Auxiliary step `prime_pp` in the banana-density argument used in Proposition 5.2. -/
 lemma prime_pp (n : ℕ) : Nat.Prime (pp n) := Nat.prime_nth_prime n
+/-- Auxiliary step `pp_pos` in the banana-density argument used in Proposition 5.2. -/
 lemma pp_pos (n : ℕ) : 0 < pp n := (prime_pp n).pos
 
+/-- Auxiliary step `tendsto_pp` in the banana-density argument used in Proposition 5.2. -/
 lemma tendsto_pp : Tendsto pp atTop atTop := by
   exact tendsto_atTop_mono
     (fun n => (Nat.le_add_right n 2).trans (Nat.add_two_le_nth_prime n)) tendsto_id
 
+/-- Auxiliary step `adj_not_dvd` in the banana-density argument used in Proposition 5.2. -/
 lemma adj_not_dvd (r : ℝ) (n : ℕ) : ¬ (pp n : ℤ) ∣ adj r n := by
   rw [adj]
   split_ifs with h
@@ -261,6 +280,7 @@ lemma adj_not_dvd (r : ℝ) (n : ℕ) : ¬ (pp n : ℤ) ∣ adj r n := by
     exact (prime_pp n).not_dvd_one hone'
   · exact h
 
+/-- Auxiliary step `adj_coprime` in the banana-density argument used in Proposition 5.2. -/
 lemma adj_coprime (r : ℝ) (n : ℕ) : IsCoprime (adj r n) (pp n : ℤ) := by
   rw [Int.isCoprime_iff_nat_coprime]
   apply Nat.Coprime.symm
@@ -268,6 +288,7 @@ lemma adj_coprime (r : ℝ) (n : ℕ) : IsCoprime (adj r n) (pp n : ℤ) := by
   rw [(prime_pp n).coprime_iff_not_dvd]
   simpa only [Int.natCast_dvd] using adj_not_dvd r n
 
+/-- Auxiliary step `adj_error_lower` in the banana-density argument used in Proposition 5.2. -/
 lemma adj_error_lower (r : ℝ) (n : ℕ) :
     (-1 : ℝ) ≤ (adj r n : ℝ) - (pp n : ℝ) * r := by
   rw [adj]
@@ -281,6 +302,7 @@ lemma adj_error_lower (r : ℝ) (n : ℕ) :
       Int.lt_floor_add_one _
     linarith
 
+/-- Auxiliary step `adj_error_upper` in the banana-density argument used in Proposition 5.2. -/
 lemma adj_error_upper (r : ℝ) (n : ℕ) :
     (adj r n : ℝ) - (pp n : ℝ) * r ≤ 2 := by
   rw [adj]
@@ -292,6 +314,7 @@ lemma adj_error_upper (r : ℝ) (n : ℕ) :
     have hf : ((⌊(pp n : ℝ) * r⌋ : ℤ) : ℝ) ≤ (pp n : ℝ) * r := Int.floor_le _
     linarith
 
+/-- Auxiliary step `tendsto_adj_div` in the banana-density argument used in Proposition 5.2. -/
 lemma tendsto_adj_div (r : ℝ) :
     Tendsto (fun n => (adj r n : ℝ) / (pp n : ℝ)) atTop (nhds r) := by
   have hpR : Tendsto (fun n => (pp n : ℝ)) atTop atTop :=
@@ -319,16 +342,19 @@ private def botD (D : ℝ) (n : ℕ) : ℤ := eps D * (pp n : ℤ)
 private def area (A B C D : ℝ) (n : ℕ) : ℝ :=
   A * botD D n - B * botC C D n
 
+/-- Auxiliary step `eps_sq` in the banana-density argument used in Proposition 5.2. -/
 private lemma eps_sq (D : ℝ) : eps D * eps D = 1 := by
   simp only [eps]
   split_ifs <;> norm_num
 
+/-- Auxiliary step `eps_ne_zero` in the banana-density argument used in Proposition 5.2. -/
 private lemma eps_ne_zero (D : ℝ) : eps D ≠ 0 := by
   intro h
   have := eps_sq D
   rw [h] at this
   norm_num at this
 
+/-- Auxiliary step `eps_cast_mul_abs` in the banana-density argument used in Proposition 5.2. -/
 private lemma eps_cast_mul_abs {D : ℝ} (hD : D ≠ 0) :
     (eps D : ℝ) * |D| = D := by
   simp only [eps]
@@ -339,6 +365,7 @@ private lemma eps_cast_mul_abs {D : ℝ} (hD : D ≠ 0) :
     rw [abs_of_neg hn]
     norm_num
 
+/-- Auxiliary step `bot_coprime` in the banana-density argument used in Proposition 5.2. -/
 private lemma bot_coprime (C D : ℝ) (n : ℕ) :
     IsCoprime (botC C D n) (botD D n) := by
   simp only [botC, botD, eps]
@@ -346,6 +373,7 @@ private lemma bot_coprime (C D : ℝ) (n : ℕ) :
   · simpa using adj_coprime (C / D) n
   · simpa using (adj_coprime (C / D) n).neg_left.neg_right
 
+/-- Auxiliary step `tendsto_area_div` in the banana-density argument used in Proposition 5.2. -/
 private lemma tendsto_area_div
     {A B C D : ℝ} (hD : D ≠ 0) (hdet : A * D - B * C = 1) :
     Tendsto (fun n => area A B C D n / (pp n : ℝ)) atTop (nhds (1 / |D|)) := by
@@ -373,6 +401,7 @@ private lemma tendsto_area_div
   rw [← hval]
   exact hbase.congr' (Filter.Eventually.of_forall fun n => (hformula n).symm)
 
+/-- Auxiliary step `tendsto_area_atTop` in the banana-density argument used in Proposition 5.2. -/
 private lemma tendsto_area_atTop
     {A B C D : ℝ} (hD : D ≠ 0) (hdet : A * D - B * C = 1) :
     Tendsto (area A B C D) atTop atTop := by
@@ -386,6 +415,7 @@ private lemma tendsto_area_atTop
   have hp : (pp n : ℝ) ≠ 0 := by exact_mod_cast (pp_pos n).ne'
   field_simp [hp]
 
+/-- Auxiliary step `tendsto_botC_div_area` in the banana-density argument used in Proposition 5.2. -/
 private lemma tendsto_botC_div_area
     {A B C D : ℝ} (hD : D ≠ 0) (hdet : A * D - B * C = 1) :
     Tendsto (fun n => (botC C D n : ℝ) / area A B C D n) atTop (nhds C) := by
@@ -417,6 +447,7 @@ private lemma tendsto_botC_div_area
     linear_combination C * eps_cast_mul_abs hD
   simpa only [hval] using hquot.congr' heq
 
+/-- Auxiliary step `tendsto_botD_div_area` in the banana-density argument used in Proposition 5.2. -/
 private lemma tendsto_botD_div_area
     {A B C D : ℝ} (hD : D ≠ 0) (hdet : A * D - B * C = 1) :
     Tendsto (fun n => (botD D n : ℝ) / area A B C D n) atTop (nhds D) := by
@@ -443,6 +474,7 @@ private lemma tendsto_botD_div_area
     exact eps_cast_mul_abs hD
   simpa only [hval] using hquot.congr' heq
 
+/-- Auxiliary step `coset_mem_closure_of_d_ne_zero` in the banana-density argument used in Proposition 5.2. -/
 private theorem coset_mem_closure_of_d_ne_zero
     (g : BananaSL2R) (hD : (g : Matrix (Fin 2) (Fin 2) ℝ) 1 1 ≠ 0) :
     (g : BananaModularSpace) ∈ closure bananaExpandingStrip := by
@@ -587,6 +619,7 @@ private theorem coset_mem_closure_of_d_ne_zero
     rw [bananaStripPoint_eq_coset]
     exact QuotientGroup.mk_mul_of_mem _ (hγR_mem n)
 
+/-- Auxiliary step `coset_mem_closure` in the banana-density argument used in Proposition 5.2. -/
 private theorem coset_mem_closure (g : BananaSL2R) :
     (g : BananaModularSpace) ∈ closure bananaExpandingStrip := by
   by_cases hD : (g : Matrix (Fin 2) (Fin 2) ℝ) 1 1 = 0

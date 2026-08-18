@@ -12,7 +12,7 @@ import Mathlib.Tactic.Ring
 set_option maxRecDepth 100000
 
 /-!
-# Units in the ABC suborders
+# Units in the scalar suborders
 
 This file formalizes the local arithmetic in Sections 4 and 5.1 of
 Dang--Gargava--Li.  The statements are kept independent of the analytic and
@@ -24,11 +24,11 @@ The companion matrix calculations at the end certify the three initial pairs
 `(l,j) = (7,1), (8,1), (24,1)` used in Section 5.1.
 -/
 
-namespace SuborderUnits
+namespace PrimePowerCalculations
 
 /-! ## Scalar suborders in integral coordinates -/
 
-/-- Membership in `ℤ + q O` in coordinates `(1,α,α²)`: precisely the
+/-- Membership in `ℤ + q O` in coordinates `(1,θ₀,θ₀²)`: precisely the
 two nonconstant coordinates are divisible by `q`. -/
 def InScalarSuborder (q : ℤ) (v : Fin 3 → ℤ) : Prop :=
   q ∣ v 1 ∧ q ∣ v 2
@@ -60,7 +60,7 @@ theorem inScalarSuborder_mul_three_iff
       hprod.mul_dvd (h₁₂.mul_dvd h21 h22) h23⟩
 
 /-- A choice of the two non-scalar integral coordinates of an order.
-For the ABC order these are the coefficients of `α` and `α²`. -/
+For the cubic order these are the coefficients of `θ₀` and `θ₀²`. -/
 abbrev TailCoordinates (A : Type) [AddCommGroup A] :=
   A →ₗ[ℤ] (Fin 2 → ℤ)
 
@@ -69,6 +69,7 @@ def InScalarOrder {A : Type} [AddCommGroup A]
     (tail : TailCoordinates A) (q : ℤ) (x : A) : Prop :=
   ∀ i, q ∣ tail x i
 
+/-- Exact algebraic step `inScalarOrder_neg` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma inScalarOrder_neg {A : Type} [AddCommGroup A]
     (tail : TailCoordinates A) (q : ℤ) (x : A) :
     InScalarOrder tail q (-x) ↔ InScalarOrder tail q x := by
@@ -138,6 +139,7 @@ lemma pow_eq_linear_add_square {A : Type} [Ring A]
   rw [hmiddle]
   noncomm_ring
 
+/-- Exact algebraic step `prime_mul_dvd_linear_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 private lemma prime_mul_dvd_linear_iff
     {p q a y : ℤ} {n : ℕ} (z : ℤ)
     (hp : Prime p) (hpq : p ∣ q) (hq : q ≠ 0)
@@ -163,7 +165,7 @@ private lemma prime_mul_dvd_linear_iff
 tail of `y` is primitive modulo `p`, then `x^n` is scalar modulo `pq`
 exactly when `p | n`.
 
-For an order with basis `(1,α,α²)`, take `tail` to be the last two
+For an order with basis `(1,θ₀,θ₀²)`, take `tail` to be the last two
 coefficient maps. -/
 theorem inScalarOrder_pow_iff_prime_dvd
     {A : Type} [Ring A]
@@ -238,11 +240,13 @@ def PrimePowerSeed {A : Type} [Ring A]
   ∃ a : ℤ, ∃ y : A, x = (a : A) + q • y ∧
     ¬ (p : ℤ) ∣ a ∧ ¬ InScalarOrder tail (p : ℤ) y
 
+/-- Exact algebraic step `InScalarOrder.mono` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma InScalarOrder.mono {A : Type} [AddCommGroup A]
     {tail : TailCoordinates A} {q r : ℤ} (hqr : q ∣ r) {x : A}
     (hx : InScalarOrder tail r x) : InScalarOrder tail q x :=
   fun i ↦ hqr.trans (hx i)
 
+/-- Exact algebraic step `PrimePowerSeed.mem` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma PrimePowerSeed.mem
     {A : Type} [Ring A] (tail : TailCoordinates A)
     (hscalar : ∀ a : ℤ, tail (a : A) = 0)
@@ -255,6 +259,7 @@ lemma PrimePowerSeed.mem
   simp only [Pi.zero_apply, zero_add, map_nsmul, Pi.smul_apply]
   exact ⟨tail y i, by simp [nsmul_eq_mul, mul_comm]⟩
 
+/-- Exact algebraic step `PrimePowerSeed.pow_mem` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma PrimePowerSeed.pow_mem
     {A : Type} [Ring A] (tail : TailCoordinates A)
     (hscalar : ∀ a : ℤ, tail (a : A) = 0)
@@ -286,6 +291,7 @@ lemma PrimePowerSeed.pow_mem
   · refine ⟨(q : ℤ) * tail z i, ?_⟩
     ring
 
+/-- Exact algebraic step `PrimePowerSeed.pow_succ_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma PrimePowerSeed.pow_succ_iff
     {A : Type} [Ring A] (tail : TailCoordinates A)
     (hscalar : ∀ a : ℤ, tail (a : A) = 0)
@@ -496,6 +502,7 @@ theorem int_power_law_of_nat_of_neg
       simpa only [dvd_neg] using
         (Int.natCast_dvd_natCast (m := N) (n := n + 1)).symm
 
+/-- Exact algebraic step `LocalPowerLaw.of_nat_of_neg` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 theorem LocalPowerLaw.of_nat_of_neg
     (P : ℕ → ℤ → Prop) (p l j : ℕ)
     (hnat : ∀ c, 1 ≤ c → ∀ n : ℕ,
@@ -571,6 +578,7 @@ def shiftedCompanion (R : Type) [CommRing R] (s t a : R) :
     Matrix (Fin 3) (Fin 3) R :=
   companion R s t - a • 1
 
+/-- Exact algebraic step `map_companion` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma map_companion {R S : Type} [CommRing R] [CommRing S]
     (f : R →+* S) (s t : R) :
     (companion R s t).map f = companion S (f s) (f t) := by
@@ -595,6 +603,7 @@ lemma map_companion {R S : Type} [CommRing R] [CommRing S]
   · change f s = f s
     rfl
 
+/-- Exact algebraic step `map_shiftedCompanion` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma map_shiftedCompanion {R S : Type} [CommRing R] [CommRing S]
     (f : R →+* S) (s t a : R) :
     (shiftedCompanion R s t a).map f =
@@ -607,43 +616,49 @@ lemma map_shiftedCompanion {R S : Type} [CommRing R] [CommRing S]
   ext i j
   simp [Matrix.map_apply, Matrix.one_apply]
 
-/-- Multiplication by the ABC generator `α`, reduced modulo `q`. -/
-def abcXMatrix (q : ℕ) (a₁ a₂ : ZMod q) :
+/-- Multiplication by the distinguished generator `θ₀`, reduced modulo `q`. -/
+def thetaZeroMatrix (q : ℕ) (a₁ a₂ : ZMod q) :
     Matrix (Fin 3) (Fin 3) (ZMod q) :=
   companion (ZMod q) (a₁ + a₂) (a₁ * a₂)
 
-/-- Multiplication by `α-a₁`, reduced modulo `q`. -/
-def abcSecondMatrix (q : ℕ) (a₁ a₂ : ZMod q) :
+/-- Multiplication by `θ₀-a₁`, reduced modulo `q`. -/
+def thetaZeroSubOneMatrix (q : ℕ) (a₁ a₂ : ZMod q) :
     Matrix (Fin 3) (Fin 3) (ZMod q) :=
   shiftedCompanion (ZMod q) (a₁ + a₂) (a₁ * a₂) a₁
 
-lemma abcXMatrix_zero_one (q : ℕ) :
-    abcXMatrix q 0 1 = companion (ZMod q) 1 0 := by
-  simp [abcXMatrix]
+/-- Exact algebraic step `thetaZeroMatrix_zero_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
+lemma thetaZeroMatrix_zero_one (q : ℕ) :
+    thetaZeroMatrix q 0 1 = companion (ZMod q) 1 0 := by
+  simp [thetaZeroMatrix]
 
-lemma abcXMatrix_one_zero (q : ℕ) :
-    abcXMatrix q 1 0 = companion (ZMod q) 1 0 := by
-  simp [abcXMatrix]
+/-- Exact algebraic step `thetaZeroMatrix_one_zero` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
+lemma thetaZeroMatrix_one_zero (q : ℕ) :
+    thetaZeroMatrix q 1 0 = companion (ZMod q) 1 0 := by
+  simp [thetaZeroMatrix]
 
-lemma abcSecondMatrix_one_one (q : ℕ) :
-    abcSecondMatrix q 1 1 = shiftedCompanion (ZMod q) 2 1 1 := by
-  unfold abcSecondMatrix
+/-- Exact algebraic step `thetaZeroSubOneMatrix_one_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
+lemma thetaZeroSubOneMatrix_one_one (q : ℕ) :
+    thetaZeroSubOneMatrix q 1 1 = shiftedCompanion (ZMod q) 2 1 1 := by
+  unfold thetaZeroSubOneMatrix
   congr 1 <;> norm_num
 
-lemma abcXMatrix_eq_of_cast_eq_zero_one (q a₁ a₂ : ℕ)
+/-- Exact algebraic step `thetaZeroMatrix_eq_of_cast_eq_zero_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
+lemma thetaZeroMatrix_eq_of_cast_eq_zero_one (q a₁ a₂ : ℕ)
     (h₁ : (a₁ : ZMod q) = 0) (h₂ : (a₂ : ZMod q) = 1) :
-    abcXMatrix q a₁ a₂ = companion (ZMod q) 1 0 := by
-  rw [h₁, h₂, abcXMatrix_zero_one]
+    thetaZeroMatrix q a₁ a₂ = companion (ZMod q) 1 0 := by
+  rw [h₁, h₂, thetaZeroMatrix_zero_one]
 
-lemma abcXMatrix_eq_of_cast_eq_one_zero (q a₁ a₂ : ℕ)
+/-- Exact algebraic step `thetaZeroMatrix_eq_of_cast_eq_one_zero` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
+lemma thetaZeroMatrix_eq_of_cast_eq_one_zero (q a₁ a₂ : ℕ)
     (h₁ : (a₁ : ZMod q) = 1) (h₂ : (a₂ : ZMod q) = 0) :
-    abcXMatrix q a₁ a₂ = companion (ZMod q) 1 0 := by
-  rw [h₁, h₂, abcXMatrix_one_zero]
+    thetaZeroMatrix q a₁ a₂ = companion (ZMod q) 1 0 := by
+  rw [h₁, h₂, thetaZeroMatrix_one_zero]
 
-lemma abcSecondMatrix_eq_of_cast_eq_one_one (q a₁ a₂ : ℕ)
+/-- Exact algebraic step `thetaZeroSubOneMatrix_eq_of_cast_eq_one_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
+lemma thetaZeroSubOneMatrix_eq_of_cast_eq_one_one (q a₁ a₂ : ℕ)
     (h₁ : (a₁ : ZMod q) = 1) (h₂ : (a₂ : ZMod q) = 1) :
-    abcSecondMatrix q a₁ a₂ = shiftedCompanion (ZMod q) 2 1 1 := by
-  rw [h₁, h₂, abcSecondMatrix_one_one]
+    thetaZeroSubOneMatrix q a₁ a₂ = shiftedCompanion (ZMod q) 2 1 1 := by
+  rw [h₁, h₂, thetaZeroSubOneMatrix_one_one]
 
 /-- The coefficient vector of the represented element is the first column
 of its multiplication matrix. -/
@@ -662,6 +677,7 @@ instance instDecidableIsScalar {R : Type} [CommRing R] [DecidableEq R]
   unfold IsScalar
   infer_instance
 
+/-- Exact algebraic step `isScalar_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma isScalar_one (R : Type) [CommRing R] [DecidableEq R] :
     IsScalar (1 : Matrix (Fin 3) (Fin 3) R) := by
   simp [IsScalar, coefficientVector, Matrix.mulVec, dotProduct,
@@ -677,11 +693,13 @@ def matrixTail : TailCoordinates (Matrix (Fin 3) (Fin 3) ℤ) where
     ext i
     fin_cases i <;> simp
 
+/-- Exact algebraic step `matrixTail_intCast` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma matrixTail_intCast (a : ℤ) :
     matrixTail (a : Matrix (Fin 3) (Fin 3) ℤ) = 0 := by
   ext i
   fin_cases i <;> simp [matrixTail, Matrix.intCast_apply]
 
+/-- Exact algebraic step `inScalarOrder_matrix_iff_isScalar_map` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma inScalarOrder_matrix_iff_isScalar_map
     (q : ℕ) (M : Matrix (Fin 3) (Fin 3) ℤ) :
     InScalarOrder matrixTail q M ↔
@@ -705,16 +723,19 @@ lemma integerCommon_pow_seven_coefficients :
     coefficientVector (integerCommonMatrix ^ 7) = ![3, 2, 4] := by
   decide
 
+/-- Exact algebraic step `integerCommon_pow_fourteen_coefficients` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerCommon_pow_fourteen_coefficients :
     coefficientVector (integerCommonMatrix ^ 14) = ![41, 28, 60] := by
   decide
 
+/-- Exact algebraic step `map_integerCommonMatrix` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma map_integerCommonMatrix (q : ℕ) :
     integerCommonMatrix.map (Int.castRingHom (ZMod q)) =
       companion (ZMod q) 1 0 := by
   rw [integerCommonMatrix, map_companion]
   norm_num
 
+/-- Exact algebraic step `map_integerFiveMatrix` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma map_integerFiveMatrix (q : ℕ) :
     integerFiveMatrix.map (Int.castRingHom (ZMod q)) =
       shiftedCompanion (ZMod q) 2 1 1 := by
@@ -749,18 +770,24 @@ def localThreeMatrix : Matrix (Fin 3) (Fin 3) (ZMod 3) :=
 def localFiveMatrix : Matrix (Fin 3) (Fin 3) (ZMod 5) :=
   shiftedCompanion (ZMod 5) 2 1 1
 
+/-- Exact algebraic step `localTwo_period` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localTwo_period : localTwoMatrix ^ 7 = 1 := by decide
+/-- Exact algebraic step `localThree_period` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localThree_period : localThreeMatrix ^ 8 = 1 := by decide
+/-- Exact algebraic step `localFive_period` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localFive_period : localFiveMatrix ^ 24 = 1 := by decide
 
+/-- Exact algebraic step `localTwo_residues` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localTwo_residues (k : ℕ) (hk : k < 7) :
     IsScalar (localTwoMatrix ^ k) ↔ k = 0 := by
   interval_cases k <;> decide
 
+/-- Exact algebraic step `localThree_residues` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localThree_residues (k : ℕ) (hk : k < 8) :
     IsScalar (localThreeMatrix ^ k) ↔ k = 0 := by
   interval_cases k <;> decide
 
+/-- Exact algebraic step `localFive_residues` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localFive_residues (k : ℕ) (hk : k < 24) :
     IsScalar (localFiveMatrix ^ k) ↔ k = 0 := by
   interval_cases k <;> decide
@@ -772,11 +799,13 @@ theorem localTwo_scalar_pow_iff (n : ℕ) :
   isScalar_pow_iff_dvd_of_period localTwoMatrix 7 (by omega)
     localTwo_period localTwo_residues n
 
+/-- Exact algebraic step `localThree_scalar_pow_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 theorem localThree_scalar_pow_iff (n : ℕ) :
     IsScalar (localThreeMatrix ^ n) ↔ 8 ∣ n :=
   isScalar_pow_iff_dvd_of_period localThreeMatrix 8 (by omega)
     localThree_period localThree_residues n
 
+/-- Exact algebraic step `localFive_scalar_pow_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 theorem localFive_scalar_pow_iff (n : ℕ) :
     IsScalar (localFiveMatrix ^ n) ↔ 24 ∣ n :=
   isScalar_pow_iff_dvd_of_period localFiveMatrix 24 (by omega)
@@ -794,12 +823,15 @@ def localThreeMatrixModNine : Matrix (Fin 3) (Fin 3) (ZMod 9) :=
 def localFiveMatrixModTwentyFive : Matrix (Fin 3) (Fin 3) (ZMod 25) :=
   shiftedCompanion (ZMod 25) 2 1 1
 
+/-- Exact algebraic step `localTwo_exact_level_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localTwo_exact_level_one :
     ¬ IsScalar (localTwoMatrixModFour ^ 7) := by decide
 
+/-- Exact algebraic step `localThree_exact_level_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localThree_exact_level_one :
     ¬ IsScalar (localThreeMatrixModNine ^ 8) := by decide
 
+/-- Exact algebraic step `localFive_exact_level_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localFive_exact_level_one :
     ¬ IsScalar (localFiveMatrixModTwentyFive ^ 24) := by decide
 
@@ -817,21 +849,27 @@ def localThreeMatrixModTwentySeven : Matrix (Fin 3) (Fin 3) (ZMod 27) :=
 def localFiveMatrixModOneTwentyFive : Matrix (Fin 3) (Fin 3) (ZMod 125) :=
   shiftedCompanion (ZMod 125) 2 1 1
 
+/-- Exact algebraic step `localTwo_first_lift_scalar` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localTwo_first_lift_scalar :
     IsScalar (localTwoMatrixModFour ^ 14) := by decide
 
+/-- Exact algebraic step `localTwo_first_lift_exact` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localTwo_first_lift_exact :
     ¬ IsScalar (localTwoMatrixModEight ^ 14) := by decide
 
+/-- Exact algebraic step `localThree_first_lift_scalar` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localThree_first_lift_scalar :
     IsScalar (localThreeMatrixModNine ^ 24) := by decide
 
+/-- Exact algebraic step `localThree_first_lift_exact` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localThree_first_lift_exact :
     ¬ IsScalar (localThreeMatrixModTwentySeven ^ 24) := by decide
 
+/-- Exact algebraic step `localFive_first_lift_scalar` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localFive_first_lift_scalar :
     IsScalar (localFiveMatrixModTwentyFive ^ 120) := by decide
 
+/-- Exact algebraic step `localFive_first_lift_exact` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma localFive_first_lift_exact :
     ¬ IsScalar (localFiveMatrixModOneTwentyFive ^ 120) := by decide
 
@@ -846,6 +884,7 @@ lemma integerTwo_seed_one :
   · norm_num
   · simp [InScalarOrder, matrixTail]
 
+/-- Exact algebraic step `integerTwo_seed_two` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerTwo_seed_two :
     PrimePowerSeed matrixTail 2 (2 ^ 2) (integerCommonMatrix ^ (7 * 2)) := by
   refine ⟨41, ![![0, 15, 22], ![7, 0, 15], ![15, 22, 22]], ?_, ?_, ?_⟩
@@ -853,6 +892,7 @@ lemma integerTwo_seed_two :
   · norm_num
   · simp [InScalarOrder, matrixTail]
 
+/-- Exact algebraic step `integerThree_seed_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerThree_seed_one :
     PrimePowerSeed matrixTail 3 3 (integerCommonMatrix ^ 8) := by
   refine ⟨4, ![![0, 2, 3], ![1, 0, 2], ![2, 3, 3]], ?_, ?_, ?_⟩
@@ -860,6 +900,7 @@ lemma integerThree_seed_one :
   · norm_num
   · simp [InScalarOrder, matrixTail]
 
+/-- Exact algebraic step `integerThree_seed_two` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerThree_seed_two :
     PrimePowerSeed matrixTail 3 (3 ^ 2) (integerCommonMatrix ^ (8 * 3)) := by
   refine ⟨1873, ![![0, 305, 447], ![142, 0, 305], ![305, 447, 447]],
@@ -868,6 +909,7 @@ lemma integerThree_seed_two :
   · norm_num
   · simp [InScalarOrder, matrixTail]
 
+/-- Exact algebraic step `integerFive_seed_one` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerFive_seed_one :
     PrimePowerSeed matrixTail 5 5 (integerFiveMatrix ^ 24) := by
   refine ⟨1, ![![-5, -3, 2], ![8, -2, -5], ![-3, 2, 2]], ?_, ?_, ?_⟩
@@ -875,6 +917,7 @@ lemma integerFive_seed_one :
   · norm_num
   · simp [InScalarOrder, matrixTail]
 
+/-- Exact algebraic step `integerFive_seed_two` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerFive_seed_two :
     PrimePowerSeed matrixTail 5 (5 ^ 2) (integerFiveMatrix ^ (24 * 5)) := by
   refine ⟨1,
@@ -884,6 +927,7 @@ lemma integerFive_seed_two :
   · norm_num
   · simp [InScalarOrder, matrixTail]
 
+/-- Exact algebraic step `integerCommon_mod_two_scalar_pow_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerCommon_mod_two_scalar_pow_iff (n : ℕ) :
     InScalarOrder matrixTail 2 (integerCommonMatrix ^ n) ↔ 7 ∣ n := by
   change InScalarOrder matrixTail ((2 : ℕ) : ℤ) (integerCommonMatrix ^ n) ↔ 7 ∣ n
@@ -891,6 +935,7 @@ lemma integerCommon_mod_two_scalar_pow_iff (n : ℕ) :
     map_integerCommonMatrix]
   exact localTwo_scalar_pow_iff n
 
+/-- Exact algebraic step `integerCommon_mod_three_scalar_pow_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerCommon_mod_three_scalar_pow_iff (n : ℕ) :
     InScalarOrder matrixTail 3 (integerCommonMatrix ^ n) ↔ 8 ∣ n := by
   change InScalarOrder matrixTail ((3 : ℕ) : ℤ) (integerCommonMatrix ^ n) ↔ 8 ∣ n
@@ -898,6 +943,7 @@ lemma integerCommon_mod_three_scalar_pow_iff (n : ℕ) :
     map_integerCommonMatrix]
   exact localThree_scalar_pow_iff n
 
+/-- Exact algebraic step `integerFive_mod_five_scalar_pow_iff` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 lemma integerFive_mod_five_scalar_pow_iff (n : ℕ) :
     InScalarOrder matrixTail 5 (integerFiveMatrix ^ n) ↔ 24 ∣ n := by
   change InScalarOrder matrixTail ((5 : ℕ) : ℤ) (integerFiveMatrix ^ n) ↔ 24 ∣ n
@@ -905,7 +951,7 @@ lemma integerFive_mod_five_scalar_pow_iff (n : ℕ) :
     map_integerFiveMatrix]
   exact localFive_scalar_pow_iff n
 
-/-- The complete `2`-adic power law for the canonical ABC generator. -/
+/-- The complete `2`-adic power law for the canonical distinguished generator. -/
 theorem integerTwo_power_law (c : ℕ) (hc : 1 ≤ c) (n : ℕ) :
     InScalarOrder matrixTail (2 ^ c : ℕ) (integerCommonMatrix ^ n) ↔
       7 * 2 ^ (c - 1) ∣ n :=
@@ -913,7 +959,7 @@ theorem integerTwo_power_law (c : ℕ) (hc : 1 ≤ c) (n : ℕ) :
     integerCommon_mod_two_scalar_pow_iff integerTwo_seed_one
     integerTwo_seed_two c hc n
 
-/-- The complete `3`-adic power law for the canonical ABC generator. -/
+/-- The complete `3`-adic power law for the canonical distinguished generator. -/
 theorem integerThree_power_law (c : ℕ) (hc : 1 ≤ c) (n : ℕ) :
     InScalarOrder matrixTail (3 ^ c : ℕ) (integerCommonMatrix ^ n) ↔
       8 * 3 ^ (c - 1) ∣ n :=
@@ -921,7 +967,7 @@ theorem integerThree_power_law (c : ℕ) (hc : 1 ≤ c) (n : ℕ) :
     integerCommon_mod_three_scalar_pow_iff integerThree_seed_one
     integerThree_seed_two c hc n
 
-/-- The complete `5`-adic power law for the shifted ABC generator. -/
+/-- The complete `5`-adic power law for the shifted distinguished generator. -/
 theorem integerFive_power_law (c : ℕ) (hc : 1 ≤ c) (n : ℕ) :
     InScalarOrder matrixTail (5 ^ c : ℕ) (integerFiveMatrix ^ n) ↔
       24 * 5 ^ (c - 1) ∣ n :=
@@ -955,16 +1001,19 @@ def fiveCertificate : LocalCertificate where
   periodAtPrime := ∀ n, IsScalar (localFiveMatrix ^ n) ↔ 24 ∣ n
   exactAtSquare := ¬ IsScalar (localFiveMatrixModTwentyFive ^ 24)
 
+/-- Exact algebraic step `twoCertificate_valid` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 theorem twoCertificate_valid :
     twoCertificate.periodAtPrime ∧ twoCertificate.exactAtSquare := by
   exact ⟨localTwo_scalar_pow_iff, localTwo_exact_level_one⟩
 
+/-- Exact algebraic step `threeCertificate_valid` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 theorem threeCertificate_valid :
     threeCertificate.periodAtPrime ∧ threeCertificate.exactAtSquare := by
   exact ⟨localThree_scalar_pow_iff, localThree_exact_level_one⟩
 
+/-- Exact algebraic step `fiveCertificate_valid` used in Lemmas 4.1--4.3 or the computations of Section 5.1. -/
 theorem fiveCertificate_valid :
     fiveCertificate.periodAtPrime ∧ fiveCertificate.exactAtSquare := by
   exact ⟨localFive_scalar_pow_iff, localFive_exact_level_one⟩
 
-end SuborderUnits
+end PrimePowerCalculations

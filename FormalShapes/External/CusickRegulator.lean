@@ -80,6 +80,7 @@ def q (A B C : ℝ) (p : ℤ × ℤ) : ℝ :=
   A * (p.1 : ℝ) ^ 2 + 2 * B * (p.1 : ℝ) * (p.2 : ℝ) +
     C * (p.2 : ℝ) ^ 2
 
+/-- Auxiliary step `q_completion` in the proof of Cusick’s regulator inequality. -/
 lemma q_completion {A B C : ℝ} (hA : A ≠ 0) (p : ℤ × ℤ) :
     q A B C p = A * ((p.1 : ℝ) + B / A * (p.2 : ℝ)) ^ 2 +
       (A * C - B ^ 2) / A * (p.2 : ℝ) ^ 2 := by
@@ -87,6 +88,7 @@ lemma q_completion {A B C : ℝ} (hA : A ≠ 0) (p : ℤ × ℤ) :
   field_simp
   ring
 
+/-- Auxiliary step `q_pos` in the proof of Cusick’s regulator inequality. -/
 lemma q_pos {A B C : ℝ} (hA : 0 < A) (hdet : 0 < A * C - B ^ 2)
     {p : ℤ × ℤ} (hp : p ≠ 0) : 0 < q A B C p := by
   rw [q_completion hA.ne']
@@ -193,9 +195,11 @@ pair. -/
 def Primitive (p : ℤ × ℤ) : Prop :=
   ∃ a b : ℤ, p.1 * b - p.2 * a = 1
 
+/-- Auxiliary step `primitive_one_zero` in the proof of Cusick’s regulator inequality. -/
 lemma primitive_one_zero : Primitive (1, 0) := by
   exact ⟨0, 1, by norm_num⟩
 
+/-- Auxiliary step `primitive_n_one` in the proof of Cusick’s regulator inequality. -/
 lemma primitive_n_one (n : ℤ) : Primitive (n, 1) := by
   exact ⟨-1, 0, by norm_num⟩
 
@@ -331,6 +335,7 @@ convention without needing that sign fact in the interface. -/
 def discriminant : ℕ :=
   (signedDiscriminant O).natAbs
 
+/-- Auxiliary step `discriminant_eq_natAbs_discr` in the proof of Cusick’s regulator inequality. -/
 theorem discriminant_eq_natAbs_discr :
     O.discriminant =
       (Algebra.discr ℤ (fun i ↦ (O.basis i : 𝓞 K))).natAbs :=
@@ -370,6 +375,7 @@ def maximalOrderBasis (O : CubicOrder K) :
 def toMaximalOrder : O.carrier →+* 𝓞 K :=
   O.carrier.val.toRingHom
 
+/-- Auxiliary step `toMaximalOrder_injective` in the proof of Cusick’s regulator inequality. -/
 theorem toMaximalOrder_injective :
     Function.Injective O.toMaximalOrder := by
   intro x y h
@@ -379,6 +385,7 @@ theorem toMaximalOrder_injective :
 def unitMap : O.carrierˣ →* (𝓞 K)ˣ :=
   Units.map O.toMaximalOrder.toMonoidHom
 
+/-- Auxiliary step `unitMap_injective` in the proof of Cusick’s regulator inequality. -/
 theorem unitMap_injective : Function.Injective O.unitMap :=
   Units.map_injective O.toMaximalOrder_injective
 
@@ -386,6 +393,7 @@ theorem unitMap_injective : Function.Injective O.unitMap :=
 def unitSubgroup : Subgroup (𝓞 K)ˣ :=
   O.unitMap.range
 
+/-- Auxiliary step `unitSubgroup_eq_range` in the proof of Cusick’s regulator inequality. -/
 theorem unitSubgroup_eq_range :
     O.unitSubgroup = O.unitMap.range :=
   rfl
@@ -407,6 +415,7 @@ private theorem finite_additive_quotient :
 def additiveIndex : ℕ :=
   Nat.card ((𝓞 K) ⧸ O.carrier.toSubmodule)
 
+/-- Auxiliary step `additiveIndex_ne_zero` in the proof of Cusick’s regulator inequality. -/
 theorem additiveIndex_ne_zero : O.additiveIndex ≠ 0 := by
   letI := finite_additive_quotient O
   exact Nat.card_ne_zero.mpr ⟨Nonempty.intro 0, inferInstance⟩
@@ -464,11 +473,13 @@ def conductor : Ideal (𝓞 K) where
     change c * x * z ∈ O.carrier
     simpa [mul_comm, mul_left_comm, mul_assoc] using hx (c * z)
 
+/-- Auxiliary step `algebraMap_additiveIndex_mem_conductor` in the proof of Cusick’s regulator inequality. -/
 theorem algebraMap_additiveIndex_mem_conductor :
     algebraMap ℤ (𝓞 K) (O.additiveIndex : ℤ) ∈ O.conductor := by
   intro y
   simpa [Algebra.smul_def] using O.additiveIndex_smul_mem y
 
+/-- Auxiliary step `conductor_ne_bot` in the proof of Cusick’s regulator inequality. -/
 theorem conductor_ne_bot : O.conductor ≠ ⊥ := by
   intro h
   have hm := O.algebraMap_additiveIndex_mem_conductor
@@ -477,6 +488,7 @@ theorem conductor_ne_bot : O.conductor ≠ ⊥ := by
     (RingHom.injective_int (algebraMap ℤ (𝓞 K))) (by simpa using hm)
   exact O.additiveIndex_ne_zero (Int.ofNat_eq_zero.mp hn)
 
+/-- Auxiliary step `finite_conductor_quotient` in the proof of Cusick’s regulator inequality. -/
 private theorem finite_conductor_quotient :
     Finite ((𝓞 K) ⧸ O.conductor) := by
   exact Ideal.finiteQuotientOfFreeOfNeBot O.conductor O.conductor_ne_bot
@@ -489,16 +501,19 @@ def reduction : (𝓞 K) →+* ((𝓞 K) ⧸ O.conductor) :=
 def unitReduction : (𝓞 K)ˣ →* ((𝓞 K) ⧸ O.conductor)ˣ :=
   Units.map O.reduction.toMonoidHom
 
+/-- Auxiliary step `finite_unit_reduction_codomain` in the proof of Cusick’s regulator inequality. -/
 private theorem finite_unit_reduction_codomain :
     Finite (((𝓞 K) ⧸ O.conductor)ˣ) := by
   letI := finite_conductor_quotient O
   infer_instance
 
+/-- Auxiliary step `unitReduction_ker_finiteIndex` in the proof of Cusick’s regulator inequality. -/
 theorem unitReduction_ker_finiteIndex :
     O.unitReduction.ker.FiniteIndex := by
   letI := finite_unit_reduction_codomain O
   infer_instance
 
+/-- Auxiliary step `coe_mem_carrier_of_mem_unitReduction_ker` in the proof of Cusick’s regulator inequality. -/
 theorem coe_mem_carrier_of_mem_unitReduction_ker
     (u : (𝓞 K)ˣ) (hu : u ∈ O.unitReduction.ker) :
     (u : 𝓞 K) ∈ O.carrier := by
@@ -516,6 +531,7 @@ theorem coe_mem_carrier_of_mem_unitReduction_ker
   convert O.carrier.add_mem hsubO hone using 1
   ring
 
+/-- Auxiliary step `unitReduction_ker_le_unitSubgroup` in the proof of Cusick’s regulator inequality. -/
 theorem unitReduction_ker_le_unitSubgroup :
     O.unitReduction.ker ≤ O.unitSubgroup := by
   intro u hu
@@ -555,15 +571,18 @@ absolute determinant of a logarithmic minor). -/
 def regulator : ℝ :=
   (O.unitSubgroup.index : ℝ) * NumberField.Units.regulator K
 
+/-- Auxiliary step `regulator_eq_index_mul` in the proof of Cusick’s regulator inequality. -/
 theorem regulator_eq_index_mul :
     O.regulator =
       (O.unitSubgroup.index : ℝ) * NumberField.Units.regulator K :=
   rfl
 
+/-- Auxiliary step `regulator_nonneg` in the proof of Cusick’s regulator inequality. -/
 theorem regulator_nonneg : 0 ≤ O.regulator := by
   exact mul_nonneg (Nat.cast_nonneg _)
     (le_of_lt (NumberField.Units.regulator_pos K))
 
+/-- Auxiliary step `regulator_pos` in the proof of Cusick’s regulator inequality. -/
 theorem regulator_pos : 0 < O.regulator := by
   exact mul_pos
     (Nat.cast_pos.mpr
@@ -580,11 +599,13 @@ def orderUnitLattice : Submodule ℤ (logSpace K) :=
   Submodule.map (logEmbedding K).toIntLinearMap
     O.unitSubgroup.toAddSubgroup.toIntSubmodule
 
+/-- Auxiliary step `orderUnitLattice_le_unitLattice` in the proof of Cusick’s regulator inequality. -/
 theorem orderUnitLattice_le_unitLattice :
     O.orderUnitLattice ≤ unitLattice K := by
   rintro _ ⟨u, hu, rfl⟩
   exact ⟨u, Submodule.mem_top, rfl⟩
 
+/-- Auxiliary step `orderUnitLattice_relIndex` in the proof of Cusick’s regulator inequality. -/
 theorem orderUnitLattice_relIndex :
     O.orderUnitLattice.toAddSubgroup.relIndex
         (unitLattice K).toAddSubgroup = O.unitSubgroup.index := by
@@ -616,6 +637,7 @@ instance orderUnitLattice_discrete : DiscreteTopology O.orderUnitLattice := by
   exact (inferInstance : DiscreteTopology (unitLattice K)).isDiscrete.mono
     O.orderUnitLattice_le_unitLattice
 
+/-- Auxiliary step `orderUnitLattice_span_eq_top` in the proof of Cusick’s regulator inequality. -/
 theorem orderUnitLattice_span_eq_top :
     Submodule.span ℝ (O.orderUnitLattice : Set (logSpace K)) = ⊤ := by
   refine le_antisymm le_top ?_
@@ -654,6 +676,7 @@ theorem regulator_eq_covolume :
     NumberField.Units.regulator, div_mul_cancel₀]
   exact ZLattice.covolume_ne_zero (unitLattice K) MeasureTheory.volume
 
+/-- Auxiliary step `card_infinitePlaces_eq_three` in the proof of Cusick’s regulator inequality. -/
 theorem card_infinitePlaces_eq_three [NumberField.IsTotallyReal K] :
     Fintype.card (InfinitePlace K) = 3 := by
   rw [InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces,
@@ -661,6 +684,7 @@ theorem card_infinitePlaces_eq_three [NumberField.IsTotallyReal K] :
     ← NumberField.IsTotallyReal.finrank K,
     (Fact.out : Module.finrank ℚ K = 3)]
 
+/-- Auxiliary step `unitRank_eq_two` in the proof of Cusick’s regulator inequality. -/
 theorem unitRank_eq_two [NumberField.IsTotallyReal K]
     (_O : CubicOrder K) : NumberField.Units.rank K = 2 := by
   rw [NumberField.Units.rank, card_infinitePlaces_eq_three]
@@ -681,6 +705,7 @@ def orderFundUnits [NumberField.IsTotallyReal K] : Fin 2 → (𝓞 K)ˣ :=
   fun i => ((O.orderUnitBasis i).property).choose.toMul
 
 open scoped Classical in
+/-- Auxiliary step `log_orderFundUnits` in the proof of Cusick’s regulator inequality. -/
 theorem log_orderFundUnits [NumberField.IsTotallyReal K] (i : Fin 2) :
     logEmbedding K (Additive.ofMul (O.orderFundUnits i)) =
       O.orderUnitBasis i := by
@@ -718,6 +743,7 @@ theorem regulator_eq_abs_det [NumberField.IsTotallyReal K] :
 
 open NumberField
 
+/-- Auxiliary step `degree_odd` in the proof of Cusick’s regulator inequality. -/
 theorem degree_odd : Odd (Module.finrank ℚ K) := by
   have hdeg : Module.finrank ℚ K = 3 := Fact.out
   rw [hdeg]
@@ -740,6 +766,7 @@ theorem torsion_le_unitSubgroup :
     ext
     simp [unitMap, toMaximalOrder]
 
+/-- Auxiliary step `unitSubgroup_sup_torsion` in the proof of Cusick’s regulator inequality. -/
 theorem unitSubgroup_sup_torsion :
     O.unitSubgroup ⊔ NumberField.Units.torsion K = O.unitSubgroup :=
   sup_eq_left.mpr O.torsion_le_unitSubgroup
@@ -789,6 +816,7 @@ noncomputable def fundLog [NumberField.IsTotallyReal K] (i j : Fin 2) : ℝ :=
   Real.log ((O.pairPlace j).val (O.orderFundUnits i))
 
 open scoped Classical in
+/-- Auxiliary step `regulator_eq_fundLog_det` in the proof of Cusick’s regulator inequality. -/
 lemma regulator_eq_fundLog_det [NumberField.IsTotallyReal K] :
     O.regulator =
       |(Matrix.of fun i j : Fin 2 => O.fundLog i j).det| := by
@@ -796,6 +824,7 @@ lemma regulator_eq_fundLog_det [NumberField.IsTotallyReal K] :
     O.regulator_eq_abs_det
 
 open scoped Classical in
+/-- Auxiliary step `exists_short_vector` in the proof of Cusick’s regulator inequality. -/
 theorem exists_short_vector [NumberField.IsTotallyReal K] :
     ∃ p : ℤ × ℤ, BinaryQuadratic.Primitive p ∧
       let x := (p.1 : ℝ) * O.fundLog 0 0 +
@@ -865,11 +894,13 @@ theorem exists_short_vector [NumberField.IsTotallyReal K] :
     simpa [a, b, c, d] using hpbound
 
 open scoped Classical in
+/-- Auxiliary step `orderFundUnits_mem_unitSubgroup` in the proof of Cusick’s regulator inequality. -/
 lemma orderFundUnits_mem_unitSubgroup [NumberField.IsTotallyReal K]
     (i : Fin 2) : O.orderFundUnits i ∈ O.unitSubgroup := by
   exact ((O.orderUnitBasis i).property).choose_spec.1
 
 open scoped Classical in
+/-- Auxiliary step `exists_short_unit` in the proof of Cusick’s regulator inequality. -/
 theorem exists_short_unit [NumberField.IsTotallyReal K] :
     ∃ u : (𝓞 K)ˣ, u ∈ O.unitSubgroup ∧
       let x := Real.log ((O.pairPlace 0).val u)
@@ -922,6 +953,7 @@ noncomputable def realConjugate [NumberField.IsTotallyReal K]
   InfinitePlace.embedding_of_isReal
     (NumberField.IsTotallyReal.isReal (O.threePlace i)) x
 
+/-- Auxiliary step `map_discr_to_rat` in the proof of Cusick’s regulator inequality. -/
 lemma map_discr_to_rat (b : Fin 3 → 𝓞 K) :
     algebraMap ℤ ℚ (Algebra.discr ℤ b) =
       Algebra.discr ℚ (fun i => (b i : K)) := by
@@ -935,6 +967,7 @@ lemma map_discr_to_rat (b : Fin 3 → 𝓞 K) :
       (nonZeroDivisors ℤ) ((b i) * (b j))).symm
 
 open scoped Classical in
+/-- Auxiliary step `power_discriminant_eq_conjugates` in the proof of Cusick’s regulator inequality. -/
 lemma power_discriminant_eq_conjugates [NumberField.IsTotallyReal K]
     (u : (𝓞 K)ˣ) :
     ((Algebra.discr ℤ
@@ -997,6 +1030,7 @@ lemma power_discriminant_eq_conjugates [NumberField.IsTotallyReal K]
     positivity
 
 open scoped Classical in
+/-- Auxiliary step `abs_realConjugate` in the proof of Cusick’s regulator inequality. -/
 lemma abs_realConjugate [NumberField.IsTotallyReal K]
     (u : (𝓞 K)ˣ) (i : Fin 3) :
     |O.realConjugate (u : K) i| = O.threePlace i (u : K) := by
@@ -1005,6 +1039,7 @@ lemma abs_realConjugate [NumberField.IsTotallyReal K]
       (NumberField.IsTotallyReal.isReal (O.threePlace i)) (u : K))
 
 open scoped Classical in
+/-- Auxiliary step `abs_prod_realConjugates` in the proof of Cusick’s regulator inequality. -/
 lemma abs_prod_realConjugates [NumberField.IsTotallyReal K]
     (u : (𝓞 K)ˣ) :
     |O.realConjugate (u : K) 0 * O.realConjugate (u : K) 1 *
@@ -1025,6 +1060,7 @@ lemma abs_prod_realConjugates [NumberField.IsTotallyReal K]
       exact NumberField.Units.norm K u
 
 open scoped Classical in
+/-- Auxiliary step `logs_three_eq_short_form` in the proof of Cusick’s regulator inequality. -/
 lemma logs_three_eq_short_form [NumberField.IsTotallyReal K]
     (u : (𝓞 K)ˣ) :
     Real.log |O.realConjugate (u : K) 0| ^ 2 +
@@ -1061,6 +1097,7 @@ lemma logs_three_eq_short_form [NumberField.IsTotallyReal K]
   ring
 
 open scoped Classical in
+/-- Auxiliary step `short_unit_minpoly_degree` in the proof of Cusick’s regulator inequality. -/
 lemma short_unit_minpoly_degree [NumberField.IsTotallyReal K]
     (u : (𝓞 K)ˣ)
     (hpos : 0 < 2 *
@@ -1093,6 +1130,7 @@ lemma short_unit_minpoly_degree [NumberField.IsTotallyReal K]
   · exact hdeg
 
 open scoped Classical in
+/-- Auxiliary step `discriminant_le_power_discriminant` in the proof of Cusick’s regulator inequality. -/
 lemma discriminant_le_power_discriminant
     (v : O.carrierˣ)
     (hdeg : (minpoly ℚ
@@ -1178,6 +1216,7 @@ lemma discriminant_le_power_discriminant
   rw [habs]
   exact Nat.le_mul_of_pos_left O.discriminant (by positivity)
 
+/-- Auxiliary step `discriminant_ge_four` in the proof of Cusick’s regulator inequality. -/
 lemma discriminant_ge_four [NumberField.IsTotallyReal K] :
     4 ≤ O.discriminant := by
   have hreal : (4 : ℝ) ≤ |(NumberField.discr K : ℝ)| := by
@@ -1309,6 +1348,7 @@ lemma cubic_log_bound_sorted {a b c d : ℝ}
       dsimp [Q, x, y, z]
       ring
 
+/-- Auxiliary step `cubic_log_bound` in the proof of Cusick’s regulator inequality. -/
 lemma cubic_log_bound {a b c d : ℝ}
     (hd : 4 ≤ d)
     (hddisc : d ≤ ((a - b) * (a - c) * (b - c)) ^ 2)

@@ -1,4 +1,4 @@
-name = "shapes_formal"
+name = "density_of_shapes"
 version = "0.1.0"
 defaultTargets = ["ShapesFormal"]
 
@@ -11,20 +11,8 @@ rev = "v4.33.0-rc1"
 name = "ShapesFormal"
 srcDir = "FormalShapes"
 roots = [
-  "main",
-  "BananaLemma",
-  "CusickRegulator",
-  "SuborderUnits",
-  "ABCOrders",
-  "ABCFundamentalUnits",
-  "ABCLocalUnits",
-  "ABCMovingFrames",
-  "ABCScalarUnits",
-  "ABCUnitLogs",
-  "ArithmeticConstruction",
-  "CRTFamily",
-  "DynamicsCore",
-  "OrderPeriods",
-  "ABCCompactness",
-  "ABCBoundedFrames"
+  "Main",
+  "External.CusickRegulator",
+  "External.BananaDensity",
+  "SageCalculations"
 ]

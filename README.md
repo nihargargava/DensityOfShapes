@@ -19,7 +19,18 @@ results on which it depends:
 
 The formalization also verifies in Lean the finite computations at the
 primes `2`, `3`, and `5` that the preprint reports as SageMath calculations.
-The main entry point is [`FormalShapes/main.lean`](FormalShapes/main.lean).
+
+The source is deliberately small:
+
+- [`FormalShapes/Main.lean`](FormalShapes/Main.lean) follows the organization
+  and terminology of the preprint and proves its main theorem.
+- [`FormalShapes/External/CusickRegulator.lean`](FormalShapes/External/CusickRegulator.lean)
+  proves Cusick's cited regulator bound.
+- [`FormalShapes/External/BananaDensity.lean`](FormalShapes/External/BananaDensity.lean)
+  proves the cited banana-density input.
+- [`FormalShapes/SageCalculations.lean`](FormalShapes/SageCalculations.lean)
+  formalizes Lemmas 4.1--4.3 and checks the finite calculations from
+  Section 5.1.
 
 The final theorem and its dependencies are **sorry-free**. An axiom audit of
 the final theorem reports only Lean's standard `propext`, `Classical.choice`,
